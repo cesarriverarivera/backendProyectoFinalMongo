@@ -3,11 +3,14 @@ const Product = require('../models/productModel')
 
 //para obtener la lista de productos
 const getProducts = asyncHandler( async (req, res) => {
-
-    const products = await Product.find({user: req.user.id})
-
-
-    res.status(200).json(products)
+    if(req.user.esAdmin) {
+        const products = await Product.find({user: req.user.id})
+        res.status(200).json(products)
+    } else {
+        res.status(401)
+        throw new Error('No es usuario Admin')
+    }
+    
 })
 
 //para crear productos
@@ -17,12 +20,16 @@ const createProducts = asyncHandler( async  (req, res) => {
         res.status(400)
         throw new Error('Por favor escribe un nombre de producto')
     }
-
-    const product = await Product.create({
-        name: req.body.name,
-        user: req.user.id //para poder crear un producto con un id de usuario
-    })
-    res.status(201).json(product)
+    if(req.user.esAdmin) {
+        const product = await Product.create({
+            name: req.body.name,
+            user: req.user.id //para poder crear un producto con un id de usuario
+        })
+        res.status(201).json(product)
+    } else {
+        res.status(401)
+        throw new Error('No es usuario Admin y no puede crear productos')
+    }
 })
 
 //para modificar productos
@@ -37,7 +44,7 @@ const updateProducts = asyncHandler( async  (req, res) => {
     //nos aseguramos que la producto pertenezca al usuario logeado, es decir el del token
     if(product.user.toString() !== req.user.id) { //req.user viene de la funcion protectora protect
         res.status(401)
-        throw new Error('Usuario no autorizado')
+        throw new Error('Usuario no autorizado, ud no registro este producto')
         
     } else {
         const productUpdated = await Product.findByIdAndUpdate(req.params.id, req.body, {new: true})
@@ -57,7 +64,7 @@ const deleteProducts = asyncHandler( async  (req, res) => {
      //nos aseguramos que la producto pertenezca al usuario logeado, es decir el del token
     if(product.user.toString() !== req.user.id) { //req.user viene de la funcion protectora protect
         res.status(401)
-        throw new Error('Usuario no autorizado')
+        throw new Error('Usuario no autorizado, ud no registro este producto')
         
     } else {
         await Product.deleteOne(product)

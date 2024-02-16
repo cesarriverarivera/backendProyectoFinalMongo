@@ -6,10 +6,10 @@ const User = require('../models/userModel')
 
 const createUser = asyncHandler( async (req, res) => {
     //desestructuro el body para poder acceder mas facil
-    const {name, email, password} =req.body 
+    const {name, email, password, esAdmin} =req.body 
 
     //verificamos que nos pasen todos los datos
-    if(!name ||!email || !password) { 
+    if(!name ||!email || !password || !esAdmin) { 
         res.status(400)
         throw new Error('Faltan datos')
     }
@@ -29,14 +29,16 @@ const createUser = asyncHandler( async (req, res) => {
     const user = await User.create({
         name,
         email,
-        password: hashedPassword
-    })
+        password: hashedPassword,
+        esAdmin
+    })   
 
     if(user) {
         res.status(201).json({
             _id: user.id,
             name: user.name,
-            email: user.email
+            email: user.email,
+            esAdmin: user.esAdmin
         })
     } else {
         res.status(400)
@@ -58,7 +60,8 @@ const loginUser = asyncHandler( async (req, res) => {
             _id: user.id,
             name: user.name,
             email: user.email,
-            token: generateToken(user.id)
+            token: generateToken(user.id),
+            esAdmin: user.esAdmin
         })
     } else {
         res.status(400)
