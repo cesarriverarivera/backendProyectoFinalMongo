@@ -46,12 +46,36 @@ const createUser = asyncHandler( async (req, res) => {
 })
 
 const loginUser = asyncHandler( async (req, res) => {
-    res.status(201).json({message: "login usuario"})
+
+    const {email, password} =req.body
+
+    //verificar que exista un usuario con ese email
+    const user = await User.findOne({email})
+
+    //si el usuario existe tambien verificamos el password
+    if(user && (await bcrypt.compare(password, user.password))) {
+        res.status(200).json({
+            _id: user.id,
+            name: user.name,
+            email: user.email,
+            token: generateToken(user.id)
+        })
+    } else {
+        res.status(400)
+        throw new Error('Credenciales incorrectas')
+    }
 })
 
 const userData = asyncHandler( async (req, res) => {
-    res.status(201).json({message: "obtener usuario"})
+    res.status(201).json(req.user) //con req.user puedo mostrar todos los datos del usario porque al proteger la ruta en userRouters, puedo tener acceso a todo lo que contenga la funcion protectora
 })
+
+//funcion para generar el token
+const generateToken = (id_usuario) => {
+    return jwt.sign({id_usuario}, process.env.JWT_SECRET, {
+        expiresIn: '30d'
+    } )
+}
 
 module.exports = {
     createUser,
