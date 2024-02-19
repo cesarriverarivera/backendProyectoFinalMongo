@@ -3,12 +3,14 @@ const dotEnv = require('dotenv').config() // para las variables de entorno
 const colors = require('colors')
 const connectDb = require('./config/db')
 const {errorHandler}  = require('./middleware/errorMiddleware')
+const cors = require('cors')
 const port = process.env.PORT || 5000  //para usar una variable de entorno se usa proces.env.(la variable de entorno)
 
 connectDb()  //para conectar el backend a la base de datos
 
 const app = express()
 
+app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 
