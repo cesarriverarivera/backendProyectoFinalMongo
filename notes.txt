@@ -1,0 +1,9 @@
+Link de local:
+http://localhost:5000
+
+
+Link de deployment en Cyclic:
+https://dark-gray-agouti-hat.cyclic.app
+
+Para poder usar a traves de postman el backend en cyclic solo se debe cambiar el link local por el link de cyclic.
+
