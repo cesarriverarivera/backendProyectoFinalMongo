@@ -14,6 +14,7 @@ app.use(express.urlencoded({extended: false}))
 
 app.use('/api/products', require('./routes/productRoutes')) //consume las rutas creadas en carpeta routes
 app.use('/api/users', require('./routes/userRoutes'))
+app.use('/api/orders', require('./routes/pedidosRoutes'))
 app.use(errorHandler)
 
 app.listen(port, () => console.log(`Servidor inciado en el puerto: ${port}`))
