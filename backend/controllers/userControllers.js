@@ -9,7 +9,7 @@ const createUser = asyncHandler( async (req, res) => {
     const {name, email, password, esAdmin} =req.body 
 
     //verificamos que nos pasen todos los datos
-    if(!name ||!email || !password || !esAdmin) { 
+    if(!name ||!email || !password) { 
         res.status(400)
         throw new Error('Faltan datos')
     }
